@@ -3,5 +3,5 @@ export type SearchParams = {
   checkOut: Date;
   rooms: number;
   adults: number;
-  children: number[];
+  childrenAges: number[];
 };

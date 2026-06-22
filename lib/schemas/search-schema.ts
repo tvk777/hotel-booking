@@ -8,15 +8,19 @@ export const searchSchema = z
   .object({
     checkIn: z.coerce.date(),
     checkOut: z.coerce.date(),
-
     rooms: z.coerce.number().int().min(1),
     adults: z.coerce.number().int().min(1),
 
-    children: z.preprocess(
+    childrenAges: z.preprocess(
       (val) => {
-        if (typeof val === 'string' && val.trim() !== '') {
-          return val.split(',').map(Number);
+        if (typeof val === 'string') {
+          if (val.trim() === '') return [];
+          return val
+            .split(',')
+            .map(Number)
+            .filter((age) => !isNaN(age));
         }
+        if (Array.isArray(val)) return val.map(Number);
         return [];
       },
       z.array(z.number().int().min(0).max(17)),
