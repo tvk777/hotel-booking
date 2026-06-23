@@ -6,8 +6,8 @@ const MAX_STAY_DAYS = 31;
 
 export const searchSchema = z
   .object({
-    checkIn: z.coerce.date(),
-    checkOut: z.coerce.date(),
+    checkIn: z.date({ message: 'Please select a check-in date.' }),
+    checkOut: z.date({ message: 'Please select a check-out date.' }),
     rooms: z.coerce.number().int().min(1),
     adults: z.coerce.number().int().min(1),
 
@@ -27,6 +27,7 @@ export const searchSchema = z
     ),
   })
   .superRefine((data, ctx) => {
+    if (!data.checkIn || !data.checkOut) return;
     const { checkIn, checkOut } = data;
 
     if (checkOut <= checkIn) {
@@ -56,4 +57,7 @@ export const searchSchema = z
     }
   });
 
-export type SearchParams = z.infer<typeof searchSchema>;
+export type SearchFormValues = Omit<z.infer<typeof searchSchema>, 'checkIn' | 'checkOut'> & {
+  checkIn: Date | null | undefined;
+  checkOut: Date | null | undefined;
+};

@@ -1,7 +1,7 @@
-import { searchSchema, SearchParams } from '@/lib/schemas/search-schema';
-import { addDays } from 'date-fns';
+import { searchSchema, SearchFormValues } from '@/lib/schemas/search-schema';
+import { addDays, parseISO, isValid } from 'date-fns';
 
-const DEFAULT_SEARCH: SearchParams = {
+const DEFAULT_SEARCH: SearchFormValues = {
   checkIn: new Date(),
   checkOut: addDays(new Date(), 1),
   rooms: 1,
@@ -9,19 +9,25 @@ const DEFAULT_SEARCH: SearchParams = {
   childrenAges: [],
 };
 
-export function parseSearchParams(searchParams: Record<string, string | string[] | undefined>) {
+type ParseResult = {
+  data: SearchFormValues;
+  error?: string;
+};
+
+export function parseSearchParams(searchParams: Record<string, string | string[] | undefined>): ParseResult {
   const { checkIn, checkOut, adults, childrenAge, rooms } = searchParams;
 
-  // Якщо URL повністю порожній
   const isEmpty = !checkIn && !checkOut && !adults && !rooms;
   if (isEmpty) {
-    return DEFAULT_SEARCH;
+    return { data: DEFAULT_SEARCH };
   }
 
-  // Готуємо об'єкт для Zod. Зверни увагу: перейменовуємо childrenAge (з URL) на childrenAges (для схеми)
+  const parsedCheckIn = typeof checkIn === 'string' ? parseISO(checkIn) : null;
+  const parsedCheckOut = typeof checkOut === 'string' ? parseISO(checkOut) : null;
+
   const rawData = {
-    checkIn,
-    checkOut,
+    checkIn: parsedCheckIn && isValid(parsedCheckIn) ? parsedCheckIn : null,
+    checkOut: parsedCheckOut && isValid(parsedCheckOut) ? parsedCheckOut : null,
     rooms,
     adults,
     childrenAges: childrenAge,
@@ -30,9 +36,13 @@ export function parseSearchParams(searchParams: Record<string, string | string[]
   const result = searchSchema.safeParse(rawData);
 
   if (result.success) {
-    return result.data;
+    return { data: result.data as SearchFormValues };
   }
 
   console.warn('Invalid search params, using defaults', result.error);
-  return DEFAULT_SEARCH;
+
+  return {
+    data: DEFAULT_SEARCH,
+    error: 'The search parameters in the link were invalid. Displaying rooms for default dates.',
+  };
 }
