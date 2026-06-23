@@ -1,4 +1,4 @@
-import { SearchParams } from '@/lib/schemas/search-schema';
+import { SearchFormValues } from '@/lib/schemas/search-schema';
 import { differenceInDays } from 'date-fns';
 
 type Room = {
@@ -10,7 +10,7 @@ type Room = {
   // add fields for filtering
   maxAdults: number;
   maxChildren: number;
-  totalRoomsAvailable: number; 
+  totalRoomsAvailable: number;
 };
 
 const rooms: Room[] = [
@@ -45,8 +45,13 @@ const rooms: Room[] = [
   },
 ];
 
-export async function getAvailableRooms(search: SearchParams) {
-  const nights = differenceInDays(search.checkOut, search.checkIn);
+export async function getAvailableRooms(search: SearchFormValues) {
+  const checkInDate = search.checkIn ? new Date(search.checkIn) : new Date();
+  const checkOutDate = search.checkOut
+    ? new Date(search.checkOut)
+    : new Date(checkInDate.getTime() + 24 * 60 * 60 * 1000);
+
+  const nights = differenceInDays(checkOutDate, checkInDate);
 
   // Filter rooms
   const filteredRooms = rooms.filter((room) => {

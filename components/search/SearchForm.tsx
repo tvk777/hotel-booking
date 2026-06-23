@@ -17,20 +17,14 @@ export function SearchForm({ initialValues, serverErrors }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Ініціалізуємо react-hook-form
   const methods = useForm<SearchFormValues>({
     defaultValues: initialValues,
   });
 
-  const { handleSubmit, watch } = methods;
+  const { handleSubmit } = methods;
 
-  // Стейт для відстеження взаємодії (щоб приховати серверні помилки)
   const [isInteracted, setIsInteracted] = useState(false);
-  // Локальний стейт для помилок валідації (якщо не використовуємо zodResolver)
   const [clientErrors, setClientErrors] = useState<Record<string, string>>({});
-
-  // Слухаємо значення для відображення помилок на лету
-  const currentValues = watch();
 
   const combinedErrors = isInteracted ? clientErrors : { ...serverErrors, ...clientErrors };
   const hasDateError = !!(
@@ -43,7 +37,6 @@ export function SearchForm({ initialValues, serverErrors }: Props) {
   const onSubmit = (data: SearchFormValues) => {
     setIsInteracted(true);
 
-    // Ручна валідація за допомогою zod-схеми
     const result = searchSchema.safeParse(data);
 
     if (!result.success) {
@@ -53,14 +46,13 @@ export function SearchForm({ initialValues, serverErrors }: Props) {
         formattedErrors[path] = issue.message;
       });
       setClientErrors(formattedErrors);
-      return; // Блокуємо відправку
+      return;
     }
 
     setClientErrors({});
 
     const validData = result.data;
 
-    // Формуємо нові URL-параметри
     const params = new URLSearchParams(searchParams.toString());
     params.set('checkIn', format(validData.checkIn, 'yyyy-MM-dd'));
     params.set('checkOut', format(validData.checkOut, 'yyyy-MM-dd'));
@@ -81,9 +73,8 @@ export function SearchForm({ initialValues, serverErrors }: Props) {
       <form
         onSubmit={handleSubmit(onSubmit)}
         className='w-full max-w-6xl mx-auto space-y-2'
-        onChange={() => setIsInteracted(true)} // Будь-яка зміна скидає серверні помилки
+        onChange={() => setIsInteracted(true)}
       >
-        {/* Блок помилок */}
         {Object.keys(combinedErrors).length > 0 && (
           <div className='bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-2xl text-xs font-semibold flex items-center gap-2 shadow-sm'>
             <span className='text-base shrink-0'>⚠️</span>
@@ -95,7 +86,6 @@ export function SearchForm({ initialValues, serverErrors }: Props) {
           </div>
         )}
 
-        {/* Головний контейнер */}
         <div
           className={`grid grid-cols-1 md:grid-cols-12 gap-2 bg-white rounded-2xl border p-1 transition-all duration-200 ${hasDateError ? 'border-red-500 ring-2 ring-red-100 bg-red-50/10' : 'border-gray-300 focus-within:border-blue-500'}`}
         >
@@ -103,7 +93,6 @@ export function SearchForm({ initialValues, serverErrors }: Props) {
 
           <TravelersField triggerSubmit={() => handleSubmit(onSubmit)()} />
 
-          {/* Кнопка Search */}
           <div className='md:col-span-2 flex items-center justify-center p-1'>
             <button
               type='submit'
