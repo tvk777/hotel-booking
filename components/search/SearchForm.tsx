@@ -72,7 +72,7 @@ export function SearchForm({ initialValues, serverErrors }: Props) {
     <FormProvider {...methods}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className='w-full max-w-6xl mx-auto space-y-2'
+        className='w-full max-w-full space-y-2 px-4'
         onChange={() => setIsInteracted(true)}
       >
         {Object.keys(combinedErrors).length > 0 && (
@@ -87,20 +87,11 @@ export function SearchForm({ initialValues, serverErrors }: Props) {
         )}
 
         <div
-          className={`grid grid-cols-1 md:grid-cols-12 gap-2 bg-white rounded-2xl border p-1 transition-all duration-200 ${hasDateError ? 'border-red-500 ring-2 ring-red-100 bg-red-50/10' : 'border-gray-300 focus-within:border-blue-500'}`}
+          className={`grid grid-cols-1 md:grid-cols-12 bg-white rounded-2xl border p-1 transition-all duration-200 ${hasDateError ? 'border-red-500 ring-2 ring-red-100 bg-red-50/10' : 'border-gray-300 focus-within:border-blue-500'}`}
         >
           <DateField hasDateError={hasDateError} triggerSubmit={() => handleSubmit(onSubmit)()} />
 
           <TravelersField triggerSubmit={() => handleSubmit(onSubmit)()} />
-
-          <div className='md:col-span-2 flex items-center justify-center p-1'>
-            <button
-              type='submit'
-              className={`w-full h-12 md:h-full font-bold px-6 rounded-full text-base transition flex items-center justify-center gap-2 shadow-sm ${hasDateError ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
-            >
-              Search
-            </button>
-          </div>
         </div>
       </form>
     </FormProvider>

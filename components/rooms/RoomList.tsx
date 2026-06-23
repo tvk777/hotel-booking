@@ -1,25 +1,24 @@
-import { Room } from '@/types/room';
+import { AvailableRoom } from '@/types/room';
+import { RoomCard } from './RoomCard';
 
-type RoomWithPricing = Room & {
-  nights: number;
-  totalPrice: number;
+type RoomListProps = {
+  rooms: AvailableRoom[];
 };
 
-type Props = {
-  rooms: RoomWithPricing[];
-};
+export function RoomList({ rooms }: RoomListProps) {
+  if (rooms.length === 0) {
+    return (
+      <div className='text-center py-12 bg-gray-50 rounded-2xl border border-dashed border-gray-300 max-w-4xl mx-auto mt-6'>
+        <p className='text-gray-500 font-medium'>No rooms found for your criteria.</p>
+        <p className='text-sm text-gray-400 mt-1'>Try changing the number of guests or dates.</p>
+      </div>
+    );
+  }
 
-export function RoomList({ rooms }: Props) {
   return (
-    <div className='space-y-4'>
+    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto px-4 py-6'>
       {rooms.map((room) => (
-        <div key={room.id} className='border rounded-lg p-4'>
-          <h2 className='text-xl font-semibold'>{room.name}</h2>
-
-          <p>Total: ${room.totalPrice}</p>
-
-          <p>{room.meal ?? 'No meals included'}</p>
-        </div>
+        <RoomCard key={room.id} room={room} />
       ))}
     </div>
   );

@@ -16,7 +16,7 @@ export default async function RoomsPage({ searchParams }: PageProps) {
   const serverErrors = error ? { urlError: error } : undefined;
 
   return (
-    <div className='space-y-6'>
+    <div className='max-w-7xl mx-auto px-4 py-6 space-y-6 w-full'>
       <SearchForm initialValues={data} serverErrors={serverErrors} />
       <RoomList rooms={availableRooms} />
     </div>

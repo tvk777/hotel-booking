@@ -63,17 +63,18 @@ export function TravelersPopover({ onClose, triggerSubmit }: TravelersPopoverPro
       <div className='pt-4 border-t border-gray-100'>
         <Counter label='Rooms' value={rooms} min={1} onChange={(newValue) => setValue('rooms', newValue)} />
       </div>
-
-      <button
-        type='button'
-        onClick={() => {
-          onClose();
-          triggerSubmit();
-        }}
-        className='w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full mt-4 text-sm transition'
-      >
-        Done
-      </button>
+      <div className='flex justify-center mt-5 w-full'>
+        <button
+          type='button'
+          onClick={() => {
+            onClose();
+            triggerSubmit();
+          }}
+          className='w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full mt-4 text-sm transition'
+        >
+          Done
+        </button>
+      </div>
     </div>
   );
 }

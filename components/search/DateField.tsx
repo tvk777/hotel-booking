@@ -77,7 +77,7 @@ export function DateField({ hasDateError, triggerSubmit }: DateFieldProps) {
       </button>
 
       {isOpen && (
-        <div className='absolute z-50 mt-3 left-0 bg-white border border-gray-200 rounded-2xl shadow-2xl p-4 md:w-[600px] animate-in fade-in slide-in-from-top-2 duration-150'>
+        <div className='absolute z-50 mt-3 left-0 bg-white border border-gray-200 rounded-2xl shadow-2xl p-5 md:w-auto md:min-w-[650px] animate-in fade-in slide-in-from-top-2 duration-150'>
           <div className='flex justify-between items-center mb-2 px-2'>
             <div>
               <h3 className='text-base font-bold text-gray-900'>Selected Dates</h3>
@@ -92,7 +92,7 @@ export function DateField({ hasDateError, triggerSubmit }: DateFieldProps) {
             </button>
           </div>
 
-          <div className='flex justify-center overflow-x-auto custom-daypicker'>
+          <div className='flex justify-center border-t border-gray-100 pt-4'>
             <DayPicker
               mode='range'
               numberOfMonths={2}
@@ -100,22 +100,29 @@ export function DateField({ hasDateError, triggerSubmit }: DateFieldProps) {
               onSelect={handleSelect}
               disabled={{ before: new Date() }}
               showOutsideDays
+              // Якщо версія v9+, цей клас змусить місяці стати в ряд:
+              className='p-0 m-0'
+              classNames={{
+                months: 'flex flex-col md:flex-row gap-6 md:gap-8 justify-center', // ЦЕ СТАВИТЬ ЇХ В ОДИН РЯДОК
+              }}
             />
           </div>
 
-          <button
-            type='button'
-            disabled={!checkIn || !checkOut}
-            onClick={() => {
-              setIsOpen(false);
-              triggerSubmit();
-            }}
-            className='w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full mt-4 text-sm transition disabled:bg-gray-200 disabled:text-gray-400'
-          >
-            {nightsCount > 0
-              ? `Search ${nightsCount} night${nightsCount > 1 ? 's' : ''}`
-              : 'Select check-in & check-out'}
-          </button>
+          <div className='flex justify-center mt-5 w-full'>
+            <button
+              type='button'
+              disabled={!checkIn || !checkOut}
+              onClick={() => {
+                setIsOpen(false);
+                triggerSubmit();
+              }}
+              className='w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-sm transition disabled:bg-gray-200 disabled:text-gray-400'
+            >
+              {nightsCount > 0
+                ? `Search ${nightsCount} night${nightsCount > 1 ? 's' : ''}`
+                : 'Select check-in & check-out'}
+            </button>
+          </div>
         </div>
       )}
     </div>
