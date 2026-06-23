@@ -2,6 +2,7 @@
 
 import { format, parseISO } from 'date-fns';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 import { AvailableRoom } from '@/types/room';
 
 type RoomCardProps = {
@@ -9,6 +10,18 @@ type RoomCardProps = {
 };
 
 export function RoomCard({ room }: RoomCardProps) {
+  const searchParams = useSearchParams();
+
+  const handleReserve = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    
+    params.set('roomId', room.id.toString());
+
+    const checkoutUrl = `/checkout?${params.toString()}`;
+
+    window.open(checkoutUrl, '_blank');
+  };
+
   const renderCancellationInfo = () => {
     if (room.cancellation.type === 'non-refundable') {
       return (
@@ -90,7 +103,7 @@ export function RoomCard({ room }: RoomCardProps) {
 
           <button
             type='button'
-            onClick={() => alert(`Booking ${room.name}...`)}
+            onClick={handleReserve}
             className='bg-blue-600 hover:bg-blue-700 text-white font-bold h-11 w-full rounded-full text-sm transition-colors shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-center flex items-center justify-center'
           >
             Reserve
