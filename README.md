@@ -49,7 +49,7 @@ npm run dev
 
 ## 🌐 Live Demo
 
-[(https://hotel-booking-coral-ten.vercel.app/)]
+[DEMO LINK](https://hotel-booking-coral-ten.vercel.app/)
 
 ---
 
